@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Κουίζ 2.1.3 - Αρχή λειτουργίας κινητήρων Σ.Ρ.</title>
+  <style>
+    :root{
+      --bg:#f4f7fb;
+      --card:#ffffff;
+      --ink:#1f2937;
+      --muted:#64748b;
+      --primary:#2563eb;
+      --primary-dark:#1d4ed8;
+      --soft:#eef4ff;
+      --line:#dbe3ef;
+      --good:#15803d;
+      --bad:#b91c1c;
+      --warn:#b45309;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:"Segoe UI", Arial, sans-serif;
+      background:linear-gradient(180deg,#eaf2ff 0%,var(--bg) 45%,#f8fafc 100%);
+      color:var(--ink);
+      line-height:1.55;
+    }
+    header, main, footer{
+      max-width:1120px;
+      margin:0 auto;
+      padding-left:18px;
+      padding-right:18px;
+    }
+    header{padding-top:28px}
+    .hero{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:22px;
+      padding:24px;
+      box-shadow:0 12px 34px rgba(15,23,42,.08);
+    }
+    h1{
+      margin:0 0 8px;
+      font-size:clamp(1.45rem,2.8vw,2.25rem);
+      color:#0f172a;
+    }
+    .subtitle{
+      margin:0;
+      color:var(--muted);
+    }
+    .chips{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:16px;
+    }
+    .chip{
+      background:var(--soft);
+      border:1px solid #cfe0ff;
+      color:#1e3a8a;
+      padding:7px 11px;
+      border-radius:999px;
+      font-size:.92rem;
+      font-weight:800;
+    }
+    main{padding-top:10px;padding-bottom:36px}
+    .panel{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:20px;
+      margin:18px 0;
+      box-shadow:0 8px 24px rgba(15,23,42,.05);
+    }
+    .topbar{
+      display:grid;
+      grid-template-columns:1fr auto auto;
+      gap:12px;
+      align-items:end;
+    }
+    label.small{
+      display:block;
+      font-weight:800;
+      margin-bottom:6px;
+    }
+    input[type="text"], input[type="number"]{
+      width:100%;
+      padding:12px 14px;
+      border:1px solid #cbd5e1;
+      border-radius:12px;
+      font-size:1rem;
+      outline:none;
+    }
+    input[type="text"]:focus, input[type="number"]:focus{
+      border-color:var(--primary);
+      box-shadow:0 0 0 3px rgba(37,99,235,.12);
+    }
+    button{
+      border:0;
+      border-radius:12px;
+      padding:12px 16px;
+      cursor:pointer;
+      font-weight:900;
+      font-size:.98rem;
+      transition:.15s ease;
+      white-space:nowrap;
+    }
+    .btn-primary{background:var(--primary);color:#fff}
+    .btn-primary:hover{background:var(--primary-dark)}
+    .btn-secondary{background:#e2e8f0;color:#0f172a}
+    .btn-secondary:hover{background:#cbd5e1}
+    .section-title{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      margin:4px 0 14px;
+      padding-bottom:10px;
+      border-bottom:1px solid var(--line);
+    }
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-width:34px;
+      height:34px;
+      border-radius:999px;
+      background:#dbeafe;
+      color:#1d4ed8;
+      font-weight:900;
+    }
+    h2{margin:0;font-size:1.25rem}
+    .hint{
+      color:var(--muted);
+      margin:0 0 14px;
+      font-size:.95rem;
+    }
+    .formula{
+      display:inline-block;
+      font-family:Consolas,"Courier New",monospace;
+      background:#f8fafc;
+      border:1px solid #e2e8f0;
+      border-radius:8px;
+      padding:2px 7px;
+      font-weight:900;
+      color:#0f172a;
+    }
+    .question{
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:16px;
+      margin:14px 0;
+      background:#fff;
+    }
+    .q-title{
+      font-weight:900;
+      margin-bottom:12px;
+    }
+    .choices{
+      display:grid;
+      gap:9px;
+    }
+    .choice{
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+      padding:10px 12px;
+      border:1px solid #d7dfeb;
+      border-radius:12px;
+      background:#fbfdff;
+      cursor:pointer;
+    }
+    .choice:hover{background:#f1f5f9}
+    .choice input{margin-top:4px;flex:0 0 auto}
+    .feedback{
+      display:none;
+      margin-top:12px;
+      padding:10px 12px;
+      border-radius:12px;
+      font-weight:700;
+    }
+    .feedback.good{
+      display:block;
+      background:#dcfce7;
+      color:#14532d;
+      border:1px solid #bbf7d0;
+    }
+    .feedback.bad{
+      display:block;
+      background:#fee2e2;
+      color:#7f1d1d;
+      border:1px solid #fecaca;
+    }
+    .result{
+      display:none;
+      margin-top:18px;
+      padding:18px;
+      border-radius:18px;
+      border:1px solid #bfdbfe;
+      background:#eff6ff;
+    }
+    .score-big{
+      font-size:2rem;
+      font-weight:900;
+      color:#1d4ed8;
+      margin:2px 0 8px;
+    }
+    .progress{
+      height:16px;
+      background:#dbeafe;
+      border-radius:999px;
+      overflow:hidden;
+      margin:12px 0 4px;
+    }
+    .bar{
+      width:0%;
+      height:100%;
+      background:linear-gradient(90deg,#2563eb,#16a34a);
+      transition:width .35s ease;
+    }
+    .feedback-list{margin:10px 0 0;padding-left:20px}
+    .ok{color:var(--good);font-weight:900}
+    .no{color:var(--bad);font-weight:900}
+    .note{
+      color:var(--muted);
+      font-size:.93rem;
+      margin-top:10px;
+    }
+    .workspace{
+      display:grid;
+      grid-template-columns:minmax(260px,.8fr) minmax(320px,1.2fr);
+      gap:16px;
+      align-items:start;
+    }
+    .bank,.zones{
+      border:1px dashed #b9c5d6;
+      border-radius:16px;
+      background:#fbfdff;
+      padding:14px;
+      min-height:92px;
+    }
+    .bank-title,.zones-title{
+      font-weight:900;
+      color:#334155;
+      margin:0 0 10px;
+    }
+    .cards{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+    }
+    .card{
+      user-select:none;
+      border:1px solid #cbd5e1;
+      background:#fff;
+      border-radius:12px;
+      padding:10px 12px;
+      cursor:grab;
+      font-weight:900;
+      box-shadow:0 4px 12px rgba(15,23,42,.06);
+      touch-action:manipulation;
+    }
+    .card:active{cursor:grabbing}
+    .card.selected{
+      outline:3px solid rgba(37,99,235,.24);
+      border-color:var(--primary);
+      background:#eff6ff;
+    }
+    .drop-grid{display:grid;gap:10px}
+    .drop-row{
+      display:grid;
+      grid-template-columns:minmax(175px,.78fr) minmax(180px,1fr);
+      gap:10px;
+      align-items:stretch;
+    }
+    .definition{
+      border:1px solid #e2e8f0;
+      background:#f8fafc;
+      border-radius:12px;
+      padding:10px 12px;
+      font-weight:800;
+    }
+    .dropzone{
+      min-height:48px;
+      border:2px dashed #cbd5e1;
+      background:#fff;
+      border-radius:12px;
+      padding:8px;
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      align-items:center;
+    }
+    .dropzone.over{border-color:var(--primary);background:#eff6ff}
+    .dropzone.correct{border-color:#22c55e;background:#f0fdf4}
+    .dropzone.wrong{border-color:#ef4444;background:#fef2f2}
+    .category-grid{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:12px;
+    }
+    .category{
+      min-height:180px;
+      align-content:flex-start;
+    }
+    .category h3{
+      width:100%;
+      margin:0 0 8px;
+      font-size:1rem;
+      color:#1e3a8a;
+    }
+    .calc-grid{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(260px,1fr));
+      gap:14px;
+    }
+    .calc-card{
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:14px;
+      background:#fff;
+    }
+    .calc-card.correct{border-color:#22c55e;background:#f0fdf4}
+    .calc-card.wrong{border-color:#ef4444;background:#fef2f2}
+    .calc-data{
+      margin:0 0 10px;
+      font-weight:800;
+    }
+    .calc-row{
+      display:grid;
+      grid-template-columns:1fr auto;
+      gap:8px;
+      align-items:center;
+    }
+    .calc-row input{max-width:150px}
+    .unanswered{
+      border-color:#f59e0b !important;
+      box-shadow:0 0 0 3px rgba(245,158,11,.12);
+    }
+    footer{
+      color:var(--muted);
+      font-size:.9rem;
+      padding-bottom:26px;
+    }
+    @media(max-width:850px){
+      .workspace{grid-template-columns:1fr}
+      .category-grid,.calc-grid{grid-template-columns:1fr}
+      .topbar{grid-template-columns:1fr}
+      .drop-row{grid-template-columns:1fr}
+      button{width:100%}
+      .hero,.panel{padding:16px}
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="hero">
+      <h1>Κουίζ 2.1.3: Αρχή λειτουργίας κινητήρων Σ.Ρ.</h1>
+      <p class="subtitle">Όλα τα προτεινόμενα κουίζ σε ένα αρχείο HTML, με σειρά από το 1 έως το 4.</p>
+      <div class="chips">
+        <span class="chip">1. Πολλαπλής + Σ/Λ</span>
+        <span class="chip">2. Drag & Drop τύπου</span>
+        <span class="chip">3. Υπολογιστικό quiz</span>
+        <span class="chip">4. Τι θα συμβεί αν...</span>
+        <span class="chip">Σύνολο: 42 μονάδες</span>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="panel">
+      <div class="topbar">
+        <div>
+          <label class="small" for="studentName">Όνομα μαθητή / μαθήτριας</label>
+          <input id="studentName" type="text" placeholder="Γράψε εδώ το όνομά σου">
+        </div>
+        <button class="btn-primary" onclick="checkAll()">Έλεγχος όλων</button>
+        <button class="btn-secondary" onclick="resetAll()">Καθαρισμός</button>
+      </div>
+      <p class="note">Βασικός τύπος: <span class="formula">F = B · ℓ · I · ημ(α)</span>, όπου η δύναμη F μετριέται σε Ν.</p>
+      <div id="result" class="result">
+        <h2>Αποτέλεσμα</h2>
+        <div id="scoreText" class="score-big"></div>
+        <div class="progress"><div id="scoreBar" class="bar"></div></div>
+        <p id="message"></p>
+        <ul id="details" class="feedback-list"></ul>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="section-title">
+        <span class="badge">1</span>
+        <h2>Πολλαπλής επιλογής και σωστού / λάθους</h2>
+      </div>
+      <p class="hint">Απάντησε πρώτα στις ερωτήσεις θεωρίας.</p>
+      <div id="mcqContainer"></div>
+      <div id="tfContainer"></div>
+    </section>
+
+    <section class="panel">
+      <div class="section-title">
+        <span class="badge">2</span>
+        <h2>Drag & Drop: Αντιστοίχιση συμβόλων του τύπου</h2>
+      </div>
+      <p class="hint">Σύρε κάθε σύμβολο στη σωστή έννοια. Σε κινητό μπορείς και με κλικ: πατάς την κάρτα και μετά το πλαίσιο.</p>
+      <div class="workspace">
+        <div class="bank">
+          <p class="bank-title">Κάρτες</p>
+          <div id="symbolBank" class="cards dropzone" data-bank="true" data-activity="symbols"></div>
+        </div>
+        <div class="zones">
+          <p class="zones-title">Πλαίσια αντιστοίχισης</p>
+          <div id="symbolZones" class="drop-grid"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="section-title">
+        <span class="badge">3</span>
+        <h2>Υπολογιστικό quiz δύναμης Laplace</h2>
+      </div>
+      <p class="hint">Υπολόγισε τη δύναμη από τον τύπο <span class="formula">F = B · ℓ · I · ημ(α)</span>. Γράψε μόνο τον αριθμό. Μπορείς να χρησιμοποιήσεις κόμμα ή τελεία.</p>
+      <div id="calcContainer" class="calc-grid"></div>
+    </section>
+
+    <section class="panel">
+      <div class="section-title">
+        <span class="badge">4</span>
+        <h2>Drag & Drop: Τι θα συμβεί αν...</h2>
+      </div>
+      <p class="hint">Σύρε κάθε περίπτωση στην κατάλληλη κατηγορία.</p>
+      <div class="workspace">
+        <div class="bank">
+          <p class="bank-title">Κάρτες</p>
+          <div id="caseBank" class="cards dropzone" data-bank="true" data-activity="cases"></div>
+        </div>
+        <div class="zones">
+          <p class="zones-title">Κατηγορίες</p>
+          <div class="category-grid" id="caseZones"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    Εκπαιδευτικό αρχείο HTML για Γ΄ ΕΠΑ.Λ. — Ηλεκτρικές Μηχανές, Ενότητα 2.1.3.
+  </footer>
+
+<script>
+const mcq = [
+  {
+    q:"1. Πότε αναπτύσσεται δύναμη σε έναν αγωγό μέσα σε μαγνητικό πεδίο;",
+    choices:[
+      "Όταν ο αγωγός είναι μονωμένος και ακίνητος.",
+      "Όταν ο αγωγός διαρρέεται από ρεύμα και βρίσκεται μέσα σε μαγνητικό πεδίο.",
+      "Όταν ο αγωγός είναι κατασκευασμένος μόνο από αλουμίνιο.",
+      "Όταν δεν υπάρχει μαγνητικό πεδίο."
+    ],
+    answer:1,
+    explain:"Η αρχή λειτουργίας του κινητήρα Σ.Ρ. στηρίζεται στη δύναμη που δέχεται ρευματοφόρος αγωγός μέσα σε μαγνητικό πεδίο."
+  },
+  {
+    q:"2. Η δύναμη που ασκείται στον ρευματοφόρο αγωγό ονομάζεται συνήθως:",
+    choices:["Δύναμη Coulomb","Δύναμη Laplace","Δύναμη τριβής","Ηλεκτρεγερτική δύναμη"],
+    answer:1,
+    explain:"Η δύναμη αυτή είναι δύναμη Laplace."
+  },
+  {
+    q:"3. Ποιος είναι ο σωστός τύπος για το μέτρο της δύναμης;",
+    choices:["F = B · ℓ · I · ημ(α)","F = B · ℓ · υ · ημ(α)","F = U · I","F = R · I²"],
+    answer:0,
+    explain:"Για κινητήρα/ρευματοφόρο αγωγό ο τύπος είναι F = B · ℓ · I · ημ(α)."
+  },
+  {
+    q:"4. Στον τύπο F = B · ℓ · I · ημ(α), το I συμβολίζει:",
+    choices:["την ταχύτητα του αγωγού","την ένταση του ρεύματος","τη μαγνητική επαγωγή","τη γωνιακή ταχύτητα"],
+    answer:1,
+    explain:"Το I είναι η ένταση του ρεύματος που διαρρέει τον αγωγό."
+  },
+  {
+    q:"5. Η μονάδα μέτρησης της δύναμης F είναι:",
+    choices:["Volt","Ampere","Newton","Tesla"],
+    answer:2,
+    explain:"Η δύναμη μετριέται σε Newton (N)."
+  },
+  {
+    q:"6. Όταν η γωνία α είναι 0°, η δύναμη F είναι:",
+    choices:["μέγιστη","μηδενική","διπλάσια","πάντα αρνητική"],
+    answer:1,
+    explain:"Για α = 0°, ημ(0°)=0, άρα F=0."
+  },
+  {
+    q:"7. Όταν η γωνία α είναι 90°, η δύναμη F είναι:",
+    choices:["μηδενική","η μέγιστη δυνατή για τα ίδια B, ℓ και I","ίση με την τάση","ανεξάρτητη από το ρεύμα"],
+    answer:1,
+    explain:"Για α = 90°, ημ(90°)=1, άρα η δύναμη γίνεται μέγιστη για τα ίδια μεγέθη."
+  },
+  {
+    q:"8. Αν διπλασιαστεί το ρεύμα I και όλα τα άλλα μείνουν ίδια, τότε η δύναμη:",
+    choices:["διπλασιάζεται","μηδενίζεται","υποδιπλασιάζεται","δεν αλλάζει"],
+    answer:0,
+    explain:"Η δύναμη είναι ανάλογη του ρεύματος I."
+  },
+  {
+    q:"9. Αν αλλάξει η φορά του ρεύματος στον αγωγό, τότε:",
+    choices:["δεν υπάρχει καμία αλλαγή","αλλάζει η φορά της δύναμης","εξαφανίζεται υποχρεωτικά το μαγνητικό πεδίο","η δύναμη γίνεται πάντα μηδέν"],
+    answer:1,
+    explain:"Η φορά της δύναμης εξαρτάται από τη φορά του ρεύματος και τη φορά του μαγνητικού πεδίου."
+  },
+  {
+    q:"10. Στον κινητήρα Σ.Ρ. η ηλεκτρική ενέργεια μετατρέπεται κυρίως σε:",
+    choices:["φωτεινή ενέργεια","θερμότητα μόνο","μηχανική ενέργεια / κίνηση","χημική ενέργεια"],
+    answer:2,
+    explain:"Ο ηλεκτρικός κινητήρας παίρνει ηλεκτρική ενέργεια και δίνει μηχανική ενέργεια."
+  }
+];
+
+const tf = [
+  {q:"1. Ρευματοφόρος αγωγός μέσα σε μαγνητικό πεδίο δέχεται δύναμη.", answer:true, explain:"Σωστό. Αυτή είναι η βασική αρχή λειτουργίας του κινητήρα Σ.Ρ."},
+  {q:"2. Η δύναμη F είναι ανάλογη της μαγνητικής επαγωγής B.", answer:true, explain:"Σωστό. Αν αυξηθεί το B, αυξάνεται και η F, με τα άλλα μεγέθη σταθερά."},
+  {q:"3. Η δύναμη F δεν εξαρτάται από το μήκος του αγωγού μέσα στο μαγνητικό πεδίο.", answer:false, explain:"Λάθος. Η δύναμη είναι ανάλογη του ενεργού μήκους ℓ."},
+  {q:"4. Αν I = 0 A, τότε δεν ασκείται δύναμη Laplace στον αγωγό.", answer:true, explain:"Σωστό. Χωρίς ρεύμα δεν έχουμε ρευματοφόρο αγωγό."},
+  {q:"5. Για α = 90°, ημ(α)=0.", answer:false, explain:"Λάθος. ημ(90°)=1."},
+  {q:"6. Η γωνία α είναι η γωνία που σχηματίζουν οι διευθύνσεις του αγωγού και του μαγνητικού πεδίου.", answer:true, explain:"Σωστό."},
+  {q:"7. Η μονάδα του B είναι το Tesla.", answer:true, explain:"Σωστό. Η μαγνητική επαγωγή μετριέται σε Tesla (T)."},
+  {q:"8. Η δύναμη Laplace τείνει να κινήσει τον αγωγό προς ορισμένη κατεύθυνση.", answer:true, explain:"Σωστό. Η κατεύθυνση εξαρτάται από τη φορά του ρεύματος και του πεδίου."},
+  {q:"9. Αν αλλάξει φορά το μαγνητικό πεδίο, μπορεί να αλλάξει και η φορά της δύναμης.", answer:true, explain:"Σωστό."},
+  {q:"10. Ο κινητήρας Σ.Ρ. λειτουργεί με την ίδια ακριβώς αρχή με τη γεννήτρια Σ.Ρ., χωρίς καμία διαφορά.", answer:false, explain:"Λάθος. Στη γεννήτρια έχουμε παραγωγή ΗΕΔ από κίνηση, ενώ στον κινητήρα έχουμε δύναμη σε ρευματοφόρο αγωγό."}
+];
+
+const symbolData = [
+  {id:"sym-F", text:"F", target:"Δύναμη στον αγωγό"},
+  {id:"sym-B", text:"B", target:"Μαγνητική επαγωγή"},
+  {id:"sym-l", text:"ℓ", target:"Ενεργό μήκος αγωγού"},
+  {id:"sym-I", text:"I", target:"Ένταση ρεύματος"},
+  {id:"sym-a", text:"α", target:"Γωνία αγωγού - μαγνητικού πεδίου"},
+  {id:"sym-sin", text:"ημ(α)", target:"Ημίτονο της γωνίας"}
+];
+
+const calcData = [
+  {id:"calc-1", text:"B = 0,5 T, ℓ = 0,4 m, I = 10 A, α = 90°", answer:2, explain:"F = 0,5 · 0,4 · 10 · 1 = 2 N"},
+  {id:"calc-2", text:"B = 1 T, ℓ = 0,5 m, I = 8 A, α = 90°", answer:4, explain:"F = 1 · 0,5 · 8 · 1 = 4 N"},
+  {id:"calc-3", text:"B = 0,8 T, ℓ = 0,25 m, I = 6 A, α = 30°", answer:0.6, explain:"ημ(30°)=0,5, άρα F = 0,8 · 0,25 · 6 · 0,5 = 0,6 N"},
+  {id:"calc-4", text:"B = 0,4 T, ℓ = 1 m, I = 5 A, α = 0°", answer:0, explain:"ημ(0°)=0, άρα F = 0 N"},
+  {id:"calc-5", text:"B = 1,2 T, ℓ = 0,5 m, I = 10 A, α = 90°", answer:6, explain:"F = 1,2 · 0,5 · 10 · 1 = 6 N"},
+  {id:"calc-6", text:"B = 0,5 T, ℓ = 0,6 m, I = 4 A, α = 90°", answer:1.2, explain:"F = 0,5 · 0,6 · 4 · 1 = 1,2 N"}
+];
+
+const caseData = [
+  {id:"case-1", text:"I = 0 A", target:"zero"},
+  {id:"case-2", text:"B = 0 T", target:"zero"},
+  {id:"case-3", text:"α = 0°", target:"zero"},
+  {id:"case-4", text:"α = 180°", target:"zero"},
+  {id:"case-5", text:"α = 90°", target:"increase"},
+  {id:"case-6", text:"Διπλασιάζεται το I", target:"increase"},
+  {id:"case-7", text:"Διπλασιάζεται το B", target:"increase"},
+  {id:"case-8", text:"Αυξάνεται το ενεργό μήκος ℓ", target:"increase"},
+  {id:"case-9", text:"Αλλάζει φορά το ρεύμα", target:"reverse"},
+  {id:"case-10", text:"Αλλάζει φορά το μαγνητικό πεδίο", target:"reverse"}
+];
+
+const categories = [
+  {id:"zero", title:"Η δύναμη μηδενίζεται"},
+  {id:"increase", title:"Η δύναμη αυξάνεται ή γίνεται μέγιστη"},
+  {id:"reverse", title:"Αλλάζει η φορά της δύναμης"}
+];
+
+let draggedId = null;
+let selectedCard = null;
+
+function shuffle(arr){ return [...arr].sort(() => Math.random() - 0.5); }
+
+function renderTheory(){
+  const mcqContainer = document.getElementById("mcqContainer");
+  const tfContainer = document.getElementById("tfContainer");
+  mcqContainer.innerHTML = mcq.map((item,i)=>`
+    <article class="question" id="mcq-${i}">
+      <div class="q-title">${item.q}</div>
+      <div class="choices">
+        ${item.choices.map((choice,j)=>`
+          <label class="choice">
+            <input type="radio" name="mcq-${i}" value="${j}">
+            <span>${choice}</span>
+          </label>`).join("")}
+      </div>
+      <div class="feedback" id="fb-mcq-${i}"></div>
+    </article>`).join("");
+
+  tfContainer.innerHTML = `
+    <div class="section-title" style="margin-top:26px">
+      <span class="badge">Σ/Λ</span>
+      <h2>Σωστό / Λάθος</h2>
+    </div>
+  ` + tf.map((item,i)=>`
+    <article class="question" id="tf-${i}">
+      <div class="q-title">${item.q}</div>
+      <div class="choices">
+        <label class="choice"><input type="radio" name="tf-${i}" value="true"><span>Σωστό</span></label>
+        <label class="choice"><input type="radio" name="tf-${i}" value="false"><span>Λάθος</span></label>
+      </div>
+      <div class="feedback" id="fb-tf-${i}"></div>
+    </article>`).join("");
+}
+
+function makeCard(item, activity){
+  const div = document.createElement("div");
+  div.className = "card";
+  div.draggable = true;
+  div.id = item.id;
+  div.dataset.activity = activity;
+  div.dataset.target = item.target || "";
+  div.textContent = item.text;
+  div.addEventListener("dragstart", e=>{
+    draggedId = div.id;
+    e.dataTransfer.setData("text/plain", div.id);
+  });
+  div.addEventListener("click", ()=>{
+    document.querySelectorAll(".card.selected").forEach(c=>c.classList.remove("selected"));
+    if(selectedCard === div.id){
+      selectedCard = null;
+      return;
+    }
+    selectedCard = div.id;
+    div.classList.add("selected");
+  });
+  return div;
+}
+
+function setupDropZone(zone){
+  zone.addEventListener("dragover", e=>{
+    e.preventDefault();
+    zone.classList.add("over");
+  });
+  zone.addEventListener("dragleave", ()=>zone.classList.remove("over"));
+  zone.addEventListener("drop", e=>{
+    e.preventDefault();
+    zone.classList.remove("over");
+    const id = e.dataTransfer.getData("text/plain") || draggedId;
+    if(id) moveCardToZone(id, zone);
+  });
+  zone.addEventListener("click", ()=>{
+    if(selectedCard){
+      moveCardToZone(selectedCard, zone);
+      document.querySelectorAll(".card.selected").forEach(c=>c.classList.remove("selected"));
+      selectedCard = null;
+    }
+  });
+}
+
+function moveCardToZone(cardId, zone){
+  const card = document.getElementById(cardId);
+  if(!card) return;
+  if(card.dataset.activity !== zone.dataset.activity) return;
+
+  if(zone.dataset.bank === "true"){
+    zone.appendChild(card);
+    return;
+  }
+
+  if(zone.dataset.activity === "symbols"){
+    const existing = zone.querySelector(".card");
+    if(existing) document.getElementById("symbolBank").appendChild(existing);
+    zone.appendChild(card);
+  }
+
+  if(zone.dataset.activity === "cases"){
+    zone.appendChild(card);
+  }
+}
+
+function renderSymbols(){
+  const bank = document.getElementById("symbolBank");
+  const zones = document.getElementById("symbolZones");
+  bank.innerHTML = "";
+  zones.innerHTML = "";
+  shuffle(symbolData).forEach(item=>bank.appendChild(makeCard(item,"symbols")));
+  setupDropZone(bank);
+  symbolData.forEach(item=>{
+    const row = document.createElement("div");
+    row.className = "drop-row";
+    const def = document.createElement("div");
+    def.className = "definition";
+    def.textContent = item.target;
+    const dz = document.createElement("div");
+    dz.className = "dropzone";
+    dz.dataset.activity = "symbols";
+    dz.dataset.accept = item.id;
+    setupDropZone(dz);
+    row.appendChild(def);
+    row.appendChild(dz);
+    zones.appendChild(row);
+  });
+}
+
+function renderCalc(){
+  const container = document.getElementById("calcContainer");
+  container.innerHTML = calcData.map((item,i)=>`
+    <div class="calc-card" id="${item.id}">
+      <p class="calc-data">${i+1}. ${item.text}</p>
+      <div class="calc-row">
+        <label for="ans-${item.id}"><strong>F =</strong></label>
+        <input id="ans-${item.id}" type="text" inputmode="decimal" placeholder="π.χ. 2">
+      </div>
+      <div class="feedback" id="fb-${item.id}"></div>
+    </div>`).join("");
+}
+
+function renderCases(){
+  const bank = document.getElementById("caseBank");
+  const zones = document.getElementById("caseZones");
+  bank.innerHTML = "";
+  zones.innerHTML = "";
+  shuffle(caseData).forEach(item=>bank.appendChild(makeCard(item,"cases")));
+  setupDropZone(bank);
+  categories.forEach(cat=>{
+    const dz = document.createElement("div");
+    dz.className = "dropzone category";
+    dz.dataset.activity = "cases";
+    dz.dataset.accept = cat.id;
+    const title = document.createElement("h3");
+    title.textContent = cat.title;
+    dz.appendChild(title);
+    setupDropZone(dz);
+    zones.appendChild(dz);
+  });
+}
+
+function parseGreekNumber(value){
+  const cleaned = String(value).trim().replace(",", ".");
+  if(cleaned === "") return NaN;
+  return Number(cleaned);
+}
+
+function checkAll(){
+  let score = 0;
+  const total = mcq.length + tf.length + symbolData.length + calcData.length + caseData.length;
+  const details = [];
+
+  let mcqCorrect = 0;
+  mcq.forEach((item,i)=>{
+    const box = document.getElementById(`mcq-${i}`);
+    const fb = document.getElementById(`fb-mcq-${i}`);
+    box.classList.remove("unanswered");
+    const selected = document.querySelector(`input[name="mcq-${i}"]:checked`);
+    if(!selected){
+      box.classList.add("unanswered");
+      fb.className = "feedback bad";
+      fb.textContent = "Δεν απαντήθηκε.";
+      return;
+    }
+    const ok = Number(selected.value) === item.answer;
+    if(ok){score++; mcqCorrect++;}
+    fb.className = ok ? "feedback good" : "feedback bad";
+    fb.textContent = (ok ? "Σωστό. " : "Λάθος. ") + item.explain;
+  });
+  details.push(`<span class="${mcqCorrect===mcq.length ? "ok" : "no"}">Πολλαπλής επιλογής:</span> ${mcqCorrect}/${mcq.length}`);
+
+  let tfCorrect = 0;
+  tf.forEach((item,i)=>{
+    const box = document.getElementById(`tf-${i}`);
+    const fb = document.getElementById(`fb-tf-${i}`);
+    box.classList.remove("unanswered");
+    const selected = document.querySelector(`input[name="tf-${i}"]:checked`);
+    if(!selected){
+      box.classList.add("unanswered");
+      fb.className = "feedback bad";
+      fb.textContent = "Δεν απαντήθηκε.";
+      return;
+    }
+    const ok = (selected.value === "true") === item.answer;
+    if(ok){score++; tfCorrect++;}
+    fb.className = ok ? "feedback good" : "feedback bad";
+    fb.textContent = (ok ? "Σωστό. " : "Λάθος. ") + item.explain;
+  });
+  details.push(`<span class="${tfCorrect===tf.length ? "ok" : "no"}">Σωστό / Λάθος:</span> ${tfCorrect}/${tf.length}`);
+
+  let symbolsCorrect = 0;
+  document.querySelectorAll("#symbolZones .dropzone").forEach(zone=>{
+    zone.classList.remove("correct","wrong");
+    const card = zone.querySelector(".card");
+    if(card && card.id === zone.dataset.accept){
+      score++;
+      symbolsCorrect++;
+      zone.classList.add("correct");
+    }else{
+      zone.classList.add("wrong");
+    }
+  });
+  details.push(`<span class="${symbolsCorrect===symbolData.length ? "ok" : "no"}">Drag & Drop τύπου:</span> ${symbolsCorrect}/${symbolData.length}`);
+
+  let calcCorrect = 0;
+  calcData.forEach(item=>{
+    const card = document.getElementById(item.id);
+    const fb = document.getElementById(`fb-${item.id}`);
+    card.classList.remove("correct","wrong","unanswered");
+    const value = parseGreekNumber(document.getElementById(`ans-${item.id}`).value);
+    if(Number.isNaN(value)){
+      card.classList.add("unanswered");
+      fb.className = "feedback bad";
+      fb.textContent = "Δεν απαντήθηκε.";
+      return;
+    }
+    const ok = Math.abs(value - item.answer) <= 0.03;
+    if(ok){score++; calcCorrect++;}
+    card.classList.add(ok ? "correct" : "wrong");
+    fb.className = ok ? "feedback good" : "feedback bad";
+    fb.textContent = (ok ? "Σωστό. " : "Λάθος. ") + item.explain;
+  });
+  details.push(`<span class="${calcCorrect===calcData.length ? "ok" : "no"}">Υπολογισμοί:</span> ${calcCorrect}/${calcData.length}`);
+
+  let casesCorrect = 0;
+  document.querySelectorAll("#caseZones .dropzone").forEach(zone=>{
+    zone.classList.remove("correct","wrong");
+    let allOk = true;
+    zone.querySelectorAll(".card").forEach(card=>{
+      if(card.dataset.target === zone.dataset.accept){
+        score++;
+        casesCorrect++;
+      }else{
+        allOk = false;
+      }
+    });
+    if(zone.querySelectorAll(".card").length > 0){
+      zone.classList.add(allOk ? "correct" : "wrong");
+    }
+  });
+  details.push(`<span class="${casesCorrect===caseData.length ? "ok" : "no"}">Τι θα συμβεί αν...:</span> ${casesCorrect}/${caseData.length}`);
+
+  const percent = Math.round(score / total * 100);
+  const name = document.getElementById("studentName").value.trim();
+  const result = document.getElementById("result");
+  result.style.display = "block";
+  document.getElementById("scoreText").textContent = `${score}/${total} (${percent}%)`;
+  document.getElementById("scoreBar").style.width = `${percent}%`;
+  document.getElementById("details").innerHTML = details.map(d=>`<li>${d}</li>`).join("");
+
+  let msg = "";
+  if(percent >= 85){
+    msg = "Πολύ καλή επίδοση. Έχεις κατανοήσει πολύ καλά την αρχή λειτουργίας των κινητήρων Σ.Ρ.";
+  }else if(percent >= 65){
+    msg = "Καλή προσπάθεια. Δες ξανά τη σχέση F = B · ℓ · I · ημ(α), ειδικά τις γωνίες και τις αλλαγές φοράς.";
+  }else{
+    msg = "Χρειάζεται επανάληψη. Ξεκίνα από το πότε εμφανίζεται δύναμη σε αγωγό και μετά πήγαινε στον τύπο.";
+  }
+  document.getElementById("message").textContent = name ? `${name}: ${msg}` : msg;
+  result.scrollIntoView({behavior:"smooth", block:"center"});
+}
+
+function resetAll(){
+  selectedCard = null;
+  draggedId = null;
+  document.querySelectorAll('input[type="radio"]').forEach(el=>el.checked=false);
+  document.querySelectorAll('input[type="text"]').forEach(el=>{
+    if(el.id !== "studentName") el.value="";
+  });
+  document.querySelectorAll(".feedback").forEach(el=>{
+    el.className = "feedback";
+    el.textContent = "";
+  });
+  document.querySelectorAll(".question,.calc-card").forEach(el=>el.classList.remove("unanswered","correct","wrong"));
+  renderSymbols();
+  renderCases();
+  renderCalc();
+  document.getElementById("result").style.display = "none";
+  document.getElementById("scoreBar").style.width = "0%";
+  window.scrollTo({top:0, behavior:"smooth"});
+}
+
+renderTheory();
+renderSymbols();
+renderCalc();
+renderCases();
+</script>
+</body>
+</html>

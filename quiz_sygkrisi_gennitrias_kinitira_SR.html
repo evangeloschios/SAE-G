@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Κουίζ: Σύγκριση Γεννήτριας και Κινητήρα Σ.Ρ.</title>
+  <style>
+    :root{
+      --bg:#f4f7fb;
+      --card:#ffffff;
+      --ink:#1f2937;
+      --muted:#64748b;
+      --primary:#2563eb;
+      --primary-dark:#1d4ed8;
+      --soft:#eef4ff;
+      --line:#dbe3ef;
+      --good:#15803d;
+      --bad:#b91c1c;
+      --warn:#b45309;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:"Segoe UI", Arial, sans-serif;
+      background:linear-gradient(180deg,#eaf2ff 0%,var(--bg) 46%,#f8fafc 100%);
+      color:var(--ink);
+      line-height:1.55;
+    }
+    header, main, footer{
+      max-width:1150px;
+      margin:0 auto;
+      padding-left:18px;
+      padding-right:18px;
+    }
+    header{padding-top:28px}
+    .hero{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:22px;
+      padding:24px;
+      box-shadow:0 12px 34px rgba(15,23,42,.08);
+    }
+    h1{
+      margin:0 0 8px;
+      font-size:clamp(1.45rem,2.8vw,2.25rem);
+      color:#0f172a;
+    }
+    .subtitle{
+      margin:0;
+      color:var(--muted);
+    }
+    .chips{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:16px;
+    }
+    .chip{
+      background:var(--soft);
+      border:1px solid #cfe0ff;
+      color:#1e3a8a;
+      padding:7px 11px;
+      border-radius:999px;
+      font-size:.92rem;
+      font-weight:800;
+    }
+    main{padding-top:10px;padding-bottom:36px}
+    .panel{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:20px;
+      margin:18px 0;
+      box-shadow:0 8px 24px rgba(15,23,42,.05);
+    }
+    .topbar{
+      display:grid;
+      grid-template-columns:1fr auto auto;
+      gap:12px;
+      align-items:end;
+    }
+    label.small{
+      display:block;
+      font-weight:800;
+      margin-bottom:6px;
+    }
+    input[type="text"]{
+      width:100%;
+      padding:12px 14px;
+      border:1px solid #cbd5e1;
+      border-radius:12px;
+      font-size:1rem;
+      outline:none;
+    }
+    input[type="text"]:focus{
+      border-color:var(--primary);
+      box-shadow:0 0 0 3px rgba(37,99,235,.12);
+    }
+    button{
+      border:0;
+      border-radius:12px;
+      padding:12px 16px;
+      cursor:pointer;
+      font-weight:900;
+      font-size:.98rem;
+      transition:.15s ease;
+      white-space:nowrap;
+    }
+    .btn-primary{background:var(--primary);color:#fff}
+    .btn-primary:hover{background:var(--primary-dark)}
+    .btn-secondary{background:#e2e8f0;color:#0f172a}
+    .btn-secondary:hover{background:#cbd5e1}
+    .section-title{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      margin:4px 0 14px;
+      padding-bottom:10px;
+      border-bottom:1px solid var(--line);
+    }
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-width:34px;
+      height:34px;
+      border-radius:999px;
+      background:#dbeafe;
+      color:#1d4ed8;
+      font-weight:900;
+    }
+    h2{margin:0;font-size:1.25rem}
+    .hint{
+      color:var(--muted);
+      margin:0 0 14px;
+      font-size:.95rem;
+    }
+    .formula{
+      display:inline-block;
+      font-family:Consolas,"Courier New",monospace;
+      background:#f8fafc;
+      border:1px solid #e2e8f0;
+      border-radius:8px;
+      padding:2px 7px;
+      font-weight:900;
+      color:#0f172a;
+    }
+    .quick-summary{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(260px,1fr));
+      gap:12px;
+      margin-top:12px;
+    }
+    .summary-card{
+      border:1px solid var(--line);
+      background:#fbfdff;
+      border-radius:16px;
+      padding:14px;
+    }
+    .summary-card h3{
+      margin:0 0 8px;
+      color:#0f172a;
+      font-size:1.05rem;
+    }
+    .summary-card ul{
+      margin:8px 0 0;
+      padding-left:20px;
+    }
+    .question{
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:16px;
+      margin:14px 0;
+      background:#fff;
+    }
+    .q-title{
+      font-weight:900;
+      margin-bottom:12px;
+    }
+    .choices{
+      display:grid;
+      gap:9px;
+    }
+    .choice{
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+      padding:10px 12px;
+      border:1px solid #d7dfeb;
+      border-radius:12px;
+      background:#fbfdff;
+      cursor:pointer;
+    }
+    .choice:hover{background:#f1f5f9}
+    .choice input{margin-top:4px;flex:0 0 auto}
+    .feedback{
+      display:none;
+      margin-top:12px;
+      padding:10px 12px;
+      border-radius:12px;
+      font-weight:700;
+    }
+    .feedback.good{
+      display:block;
+      background:#dcfce7;
+      color:#14532d;
+      border:1px solid #bbf7d0;
+    }
+    .feedback.bad{
+      display:block;
+      background:#fee2e2;
+      color:#7f1d1d;
+      border:1px solid #fecaca;
+    }
+    .result{
+      display:none;
+      margin-top:18px;
+      padding:18px;
+      border-radius:18px;
+      border:1px solid #bfdbfe;
+      background:#eff6ff;
+    }
+    .score-big{
+      font-size:2rem;
+      font-weight:900;
+      color:#1d4ed8;
+      margin:2px 0 8px;
+    }
+    .progress{
+      height:16px;
+      background:#dbeafe;
+      border-radius:999px;
+      overflow:hidden;
+      margin:12px 0 4px;
+    }
+    .bar{
+      width:0%;
+      height:100%;
+      background:linear-gradient(90deg,#2563eb,#16a34a);
+      transition:width .35s ease;
+    }
+    .feedback-list{margin:10px 0 0;padding-left:20px}
+    .ok{color:var(--good);font-weight:900}
+    .no{color:var(--bad);font-weight:900}
+    .note{
+      color:var(--muted);
+      font-size:.93rem;
+      margin-top:10px;
+    }
+    .workspace{
+      display:grid;
+      grid-template-columns:minmax(260px,.8fr) minmax(360px,1.2fr);
+      gap:16px;
+      align-items:start;
+    }
+    .bank,.zones{
+      border:1px dashed #b9c5d6;
+      border-radius:16px;
+      background:#fbfdff;
+      padding:14px;
+      min-height:92px;
+    }
+    .bank-title,.zones-title{
+      font-weight:900;
+      color:#334155;
+      margin:0 0 10px;
+    }
+    .cards{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+    }
+    .card{
+      user-select:none;
+      border:1px solid #cbd5e1;
+      background:#fff;
+      border-radius:12px;
+      padding:10px 12px;
+      cursor:grab;
+      font-weight:850;
+      box-shadow:0 4px 12px rgba(15,23,42,.06);
+      touch-action:manipulation;
+    }
+    .card:active{cursor:grabbing}
+    .card.selected{
+      outline:3px solid rgba(37,99,235,.24);
+      border-color:var(--primary);
+      background:#eff6ff;
+    }
+    .dropzone{
+      min-height:56px;
+      border:2px dashed #cbd5e1;
+      background:#fff;
+      border-radius:12px;
+      padding:8px;
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      align-items:center;
+    }
+    .dropzone.over{border-color:var(--primary);background:#eff6ff}
+    .dropzone.correct{border-color:#22c55e;background:#f0fdf4}
+    .dropzone.wrong{border-color:#ef4444;background:#fef2f2}
+    .category-grid{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:12px;
+    }
+    .category{
+      min-height:270px;
+      align-content:flex-start;
+    }
+    .category h3{
+      width:100%;
+      margin:0 0 8px;
+      font-size:1rem;
+      color:#1e3a8a;
+    }
+    .pair-grid{
+      display:grid;
+      gap:10px;
+    }
+    .pair-row{
+      display:grid;
+      grid-template-columns:minmax(180px,.8fr) minmax(180px,1fr);
+      gap:10px;
+      align-items:stretch;
+    }
+    .definition{
+      border:1px solid #e2e8f0;
+      background:#f8fafc;
+      border-radius:12px;
+      padding:10px 12px;
+      font-weight:800;
+    }
+    .unanswered{
+      border-color:#f59e0b !important;
+      box-shadow:0 0 0 3px rgba(245,158,11,.12);
+    }
+    footer{
+      color:var(--muted);
+      font-size:.9rem;
+      padding-bottom:26px;
+    }
+    @media(max-width:900px){
+      .workspace,.quick-summary{grid-template-columns:1fr}
+      .category-grid{grid-template-columns:1fr}
+      .topbar{grid-template-columns:1fr}
+      .pair-row{grid-template-columns:1fr}
+      button{width:100%}
+      .hero,.panel{padding:16px}
+    }
+    @media print{
+      body{background:#fff}
+      .hero,.panel,.question{box-shadow:none}
+      .topbar,.feedback,.result,.bank{display:none!important}
+      .panel,.question{break-inside:avoid}
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="hero">
+      <h1>Κουίζ: Σύγκριση Γεννήτριας και Κινητήρα Σ.Ρ.</h1>
+      <p class="subtitle">Επαναληπτικό HTML quiz για την ενότητα 2.1: τι μετατρέπει κάθε μηχανή, ποια αρχή λειτουργίας έχει και ποιος τύπος χρησιμοποιείται.</p>
+      <div class="chips">
+        <span class="chip">Πολλαπλής επιλογής</span>
+        <span class="chip">Σωστό / Λάθος</span>
+        <span class="chip">Drag & Drop σύγκρισης</span>
+        <span class="chip">Αντιστοίχιση τύπων</span>
+        <span class="chip">Σύνολο: 40 μονάδες</span>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="panel">
+      <div class="topbar">
+        <div>
+          <label class="small" for="studentName">Όνομα μαθητή / μαθήτριας</label>
+          <input id="studentName" type="text" placeholder="Γράψε εδώ το όνομά σου">
+        </div>
+        <button class="btn-primary" onclick="checkAll()">Έλεγχος όλων</button>
+        <button class="btn-secondary" onclick="resetAll()">Καθαρισμός</button>
+      </div>
+
+      <div class="quick-summary">
+        <div class="summary-card">
+          <h3>Γεννήτρια Σ.Ρ.</h3>
+          <ul>
+            <li>Παίρνει μηχανική ενέργεια.</li>
+            <li>Δίνει ηλεκτρική ενέργεια.</li>
+            <li>Βασική ιδέα: αγωγός κινείται μέσα σε μαγνητικό πεδίο.</li>
+            <li>Τύπος: <span class="formula">E = B · ℓ · υ · ημ(α)</span></li>
+          </ul>
+        </div>
+        <div class="summary-card">
+          <h3>Κινητήρας Σ.Ρ.</h3>
+          <ul>
+            <li>Παίρνει ηλεκτρική ενέργεια.</li>
+            <li>Δίνει μηχανική ενέργεια / κίνηση.</li>
+            <li>Βασική ιδέα: ρευματοφόρος αγωγός δέχεται δύναμη.</li>
+            <li>Τύπος: <span class="formula">F = B · ℓ · I · ημ(α)</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <div id="result" class="result">
+        <h2>Αποτέλεσμα</h2>
+        <div id="scoreText" class="score-big"></div>
+        <div class="progress"><div id="scoreBar" class="bar"></div></div>
+        <p id="message"></p>
+        <ul id="details" class="feedback-list"></ul>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="section-title">
+        <span class="badge">Α</span>
+        <h2>Πολλαπλής επιλογής</h2>
+      </div>
+      <div id="mcqContainer"></div>
+    </section>
+
+    <section class="panel">
+      <div class="section-title">
+        <span class="badge">Β</span>
+        <h2>Σωστό / Λάθος</h2>
+      </div>
+      <div id="tfContainer"></div>
+    </section>
+
+    <section class="panel">
+      <div class="section-title">
+        <span class="badge">Γ</span>
+        <h2>Drag & Drop: Γεννήτρια, Κινητήρας ή και τα δύο;</h2>
+      </div>
+      <p class="hint">Σύρε κάθε κάρτα στη σωστή στήλη. Σε κινητό μπορείς και με κλικ: πατάς κάρτα και μετά πατάς το πλαίσιο.</p>
+      <div class="workspace">
+        <div class="bank">
+          <p class="bank-title">Κάρτες</p>
+          <div id="categoryBank" class="cards dropzone" data-bank="true" data-activity="category"></div>
+        </div>
+        <div class="zones">
+          <p class="zones-title">Στήλες σύγκρισης</p>
+          <div class="category-grid" id="categoryZones"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="section-title">
+        <span class="badge">Δ</span>
+        <h2>Drag & Drop: Αντιστοίχιση τύπων και μεγεθών</h2>
+      </div>
+      <p class="hint">Σύρε το σωστό στοιχείο δίπλα στην περιγραφή.</p>
+      <div class="workspace">
+        <div class="bank">
+          <p class="bank-title">Κάρτες</p>
+          <div id="pairBank" class="cards dropzone" data-bank="true" data-activity="pair"></div>
+        </div>
+        <div class="zones">
+          <p class="zones-title">Περιγραφές</p>
+          <div id="pairZones" class="pair-grid"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    Εκπαιδευτικό αρχείο HTML για Γ΄ ΕΠΑ.Λ. — Ηλεκτρικές Μηχανές, Σύγκριση Γεννήτριας και Κινητήρα Σ.Ρ.
+  </footer>
+
+<script>
+const mcq = [
+  {
+    q:"1. Ποια μετατροπή ενέργειας κάνει η γεννήτρια Σ.Ρ.;",
+    choices:["Ηλεκτρική σε μηχανική","Μηχανική σε ηλεκτρική","Θερμική σε φωτεινή","Χημική σε θερμική"],
+    answer:1,
+    explain:"Η γεννήτρια παίρνει μηχανική ενέργεια/κίνηση και δίνει ηλεκτρική ενέργεια."
+  },
+  {
+    q:"2. Ποια μετατροπή ενέργειας κάνει ο κινητήρας Σ.Ρ.;",
+    choices:["Ηλεκτρική σε μηχανική","Μηχανική σε ηλεκτρική","Ηλεκτρική σε χημική","Μαγνητική σε θερμική μόνο"],
+    answer:0,
+    explain:"Ο κινητήρας παίρνει ηλεκτρική ενέργεια και δίνει μηχανική ενέργεια/κίνηση."
+  },
+  {
+    q:"3. Ποια είναι η βασική αρχή λειτουργίας της γεννήτριας Σ.Ρ.;",
+    choices:[
+      "Ρευματοφόρος αγωγός δέχεται δύναμη.",
+      "Αγωγός κινείται μέσα σε μαγνητικό πεδίο και αναπτύσσεται ΗΕΔ.",
+      "Αντίσταση θερμαίνεται και παράγει κίνηση.",
+      "Πυκνωτής φορτίζεται από εναλλασσόμενο ρεύμα."
+    ],
+    answer:1,
+    explain:"Στη γεννήτρια έχουμε ανάπτυξη ΗΕΔ από επαγωγή, λόγω κίνησης αγωγού μέσα σε μαγνητικό πεδίο."
+  },
+  {
+    q:"4. Ποια είναι η βασική αρχή λειτουργίας του κινητήρα Σ.Ρ.;",
+    choices:[
+      "Αγωγός χωρίς ρεύμα αναπτύσσει ΗΕΔ.",
+      "Ρευματοφόρος αγωγός μέσα σε μαγνητικό πεδίο δέχεται δύναμη.",
+      "Η τάση βραχυκύκλωσης μηδενίζει τη ροπή.",
+      "Το μαγνητικό πεδίο δημιουργεί πάντα φως."
+    ],
+    answer:1,
+    explain:"Ο κινητήρας στηρίζεται στη δύναμη που ασκείται σε αγωγό που διαρρέεται από ρεύμα μέσα σε μαγνητικό πεδίο."
+  },
+  {
+    q:"5. Ποιος τύπος συνδέεται κυρίως με τη γεννήτρια Σ.Ρ. στην ενότητα 2.1;",
+    choices:["E = B · ℓ · υ · ημ(α)","F = B · ℓ · I · ημ(α)","P = R · I","U = P · R"],
+    answer:0,
+    explain:"Στη γεννήτρια χρησιμοποιείται ο τύπος της ΗΕΔ από επαγωγή."
+  },
+  {
+    q:"6. Ποιος τύπος συνδέεται κυρίως με τον κινητήρα Σ.Ρ. στην ενότητα 2.1;",
+    choices:["E = B · ℓ · υ · ημ(α)","F = B · ℓ · I · ημ(α)","K = U1 / U2","n = 120f / P"],
+    answer:1,
+    explain:"Στον κινητήρα χρησιμοποιείται ο τύπος της δύναμης Laplace."
+  },
+  {
+    q:"7. Στη σχέση E = B · ℓ · υ · ημ(α), το υ συμβολίζει:",
+    choices:["το ρεύμα","την ταχύτητα","την αντίσταση","την ισχύ"],
+    answer:1,
+    explain:"Το υ είναι η ταχύτητα κίνησης του αγωγού."
+  },
+  {
+    q:"8. Στη σχέση F = B · ℓ · I · ημ(α), το I συμβολίζει:",
+    choices:["την ένταση του ρεύματος","την ταχύτητα","την ΗΕΔ","το ενεργό μήκος"],
+    answer:0,
+    explain:"Το I είναι το ρεύμα που διαρρέει τον αγωγό."
+  },
+  {
+    q:"9. Ποιο εξάρτημα έχει ανορθωτική δράση στη γεννήτρια Σ.Ρ.;",
+    choices:["Ο συλλέκτης","Η βάση","Το περίβλημα","Το φορτίο"],
+    answer:0,
+    explain:"Ο συλλέκτης βοηθά ώστε στην εξωτερική έξοδο να παίρνουμε συνεχές ρεύμα."
+  },
+  {
+    q:"10. Τι κοινό έχουν γεννήτρια και κινητήρας Σ.Ρ.;",
+    choices:[
+      "Δεν χρειάζονται μαγνητικό πεδίο.",
+      "Χρησιμοποιούν αγωγούς και μαγνητικό πεδίο.",
+      "Λειτουργούν μόνο με εναλλασσόμενο ρεύμα.",
+      "Δεν έχουν σχέση με μηχανική κίνηση."
+    ],
+    answer:1,
+    explain:"Και στις δύο περιπτώσεις εμπλέκονται αγωγοί και μαγνητικό πεδίο."
+  },
+  {
+    q:"11. Σε ποια μηχανή είναι βασικό ζητούμενο η παραγωγή ΗΕΔ;",
+    choices:["Στη γεννήτρια Σ.Ρ.","Στον κινητήρα Σ.Ρ.","Σε κανένα από τα δύο","Μόνο στον μετασχηματιστή"],
+    answer:0,
+    explain:"Η παραγωγή ΗΕΔ είναι βασικό φαινόμενο στη γεννήτρια."
+  },
+  {
+    q:"12. Σε ποια μηχανή είναι βασικό ζητούμενο η παραγωγή δύναμης και ροπής;",
+    choices:["Στη γεννήτρια Σ.Ρ.","Στον κινητήρα Σ.Ρ.","Στον ανορθωτή","Στον μετασχηματιστή"],
+    answer:1,
+    explain:"Στον κινητήρα η δύναμη στον αγωγό οδηγεί σε μηχανική κίνηση/ροπή."
+  }
+];
+
+const tf = [
+  {q:"1. Η γεννήτρια Σ.Ρ. παίρνει μηχανική ενέργεια και δίνει ηλεκτρική.", answer:true, explain:"Σωστό."},
+  {q:"2. Ο κινητήρας Σ.Ρ. παίρνει ηλεκτρική ενέργεια και δίνει μηχανική.", answer:true, explain:"Σωστό."},
+  {q:"3. Στη γεννήτρια Σ.Ρ. η βασική σχέση είναι F = B · ℓ · I · ημ(α).", answer:false, explain:"Λάθος. Αυτή η σχέση αφορά τη δύναμη στον κινητήρα/ρευματοφόρο αγωγό."},
+  {q:"4. Στον κινητήρα Σ.Ρ. η βασική σχέση είναι F = B · ℓ · I · ημ(α).", answer:true, explain:"Σωστό."},
+  {q:"5. Η ταχύτητα υ εμφανίζεται στον τύπο της ΗΕΔ από επαγωγή.", answer:true, explain:"Σωστό, E = B · ℓ · υ · ημ(α)."},
+  {q:"6. Το ρεύμα I εμφανίζεται στον τύπο της δύναμης Laplace.", answer:true, explain:"Σωστό, F = B · ℓ · I · ημ(α)."},
+  {q:"7. Αν ένας αγωγός δεν κινείται μέσα στο μαγνητικό πεδίο, δεν έχουμε την ίδια περίπτωση παραγωγής ΗΕΔ από κίνηση.", answer:true, explain:"Σωστό."},
+  {q:"8. Αν δεν διαρρέεται από ρεύμα ο αγωγός, δεν εμφανίζεται δύναμη Laplace όπως στον κινητήρα.", answer:true, explain:"Σωστό."},
+  {q:"9. Ο συλλέκτης σχετίζεται μόνο με τη στήριξη της μηχανής και όχι με το ρεύμα.", answer:false, explain:"Λάθος. Ο συλλέκτης έχει σημαντικό ρόλο στη μεταγωγή/ανόρθωση."},
+  {q:"10. Οι ηλεκτρικές μηχανές, γενικά, μπορούν σε αρκετές περιπτώσεις να λειτουργήσουν αναστρέψιμα.", answer:true, explain:"Σωστό. Η ίδια μηχανή μπορεί γενικά να λειτουργήσει ως γεννήτρια ή ως κινητήρας, ανάλογα με τον τρόπο τροφοδότησης/κίνησης."}
+];
+
+const categoryData = [
+  {id:"cat-1", text:"Μηχανική ενέργεια → Ηλεκτρική ενέργεια", target:"gen"},
+  {id:"cat-2", text:"Ηλεκτρική ενέργεια → Μηχανική ενέργεια", target:"mot"},
+  {id:"cat-3", text:"Ανάπτυξη ΗΕΔ από επαγωγή", target:"gen"},
+  {id:"cat-4", text:"Ανάπτυξη δύναμης σε ρευματοφόρο αγωγό", target:"mot"},
+  {id:"cat-5", text:"Χρήση σχέσης E = B · ℓ · υ · ημ(α)", target:"gen"},
+  {id:"cat-6", text:"Χρήση σχέσης F = B · ℓ · I · ημ(α)", target:"mot"},
+  {id:"cat-7", text:"Σημαντική η ταχύτητα κίνησης υ", target:"gen"},
+  {id:"cat-8", text:"Σημαντικό το ρεύμα I στον αγωγό", target:"mot"},
+  {id:"cat-9", text:"Χρειάζεται μαγνητικό πεδίο", target:"both"},
+  {id:"cat-10", text:"Υπάρχουν αγωγοί μέσα στη μηχανή", target:"both"},
+  {id:"cat-11", text:"Σχετίζεται με συλλέκτη και ψήκτρες στις κλασικές μηχανές Σ.Ρ.", target:"both"},
+  {id:"cat-12", text:"Μπορεί να είναι η ίδια μηχανή σε αντίστροφη λειτουργία", target:"both"},
+  {id:"cat-13", text:"Σκοπός της είναι να τροφοδοτήσει ηλεκτρικό φορτίο", target:"gen"},
+  {id:"cat-14", text:"Σκοπός της είναι να περιστρέψει μηχανικό φορτίο", target:"mot"}
+];
+
+const categories = [
+  {id:"gen", title:"Γεννήτρια Σ.Ρ."},
+  {id:"mot", title:"Κινητήρας Σ.Ρ."},
+  {id:"both", title:"Και τα δύο"}
+];
+
+const pairData = [
+  {id:"pair-1", text:"E", target:"ΗΕΔ από επαγωγή"},
+  {id:"pair-2", text:"F", target:"Δύναμη Laplace"},
+  {id:"pair-3", text:"υ", target:"Ταχύτητα αγωγού"},
+  {id:"pair-4", text:"I", target:"Ένταση ρεύματος"},
+  {id:"pair-5", text:"E = B · ℓ · υ · ημ(α)", target:"Τύπος γεννήτριας στην ενότητα 2.1"},
+  {id:"pair-6", text:"F = B · ℓ · I · ημ(α)", target:"Τύπος κινητήρα στην ενότητα 2.1"},
+  {id:"pair-7", text:"Μηχανική → Ηλεκτρική", target:"Μετατροπή ενέργειας γεννήτριας"},
+  {id:"pair-8", text:"Ηλεκτρική → Μηχανική", target:"Μετατροπή ενέργειας κινητήρα"}
+];
+
+let draggedId = null;
+let selectedCard = null;
+
+function shuffle(arr){ return [...arr].sort(() => Math.random() - 0.5); }
+
+function renderTheory(){
+  const mcqContainer = document.getElementById("mcqContainer");
+  const tfContainer = document.getElementById("tfContainer");
+
+  mcqContainer.innerHTML = mcq.map((item,i)=>`
+    <article class="question" id="mcq-${i}">
+      <div class="q-title">${item.q}</div>
+      <div class="choices">
+        ${item.choices.map((choice,j)=>`
+          <label class="choice">
+            <input type="radio" name="mcq-${i}" value="${j}">
+            <span>${choice}</span>
+          </label>`).join("")}
+      </div>
+      <div class="feedback" id="fb-mcq-${i}"></div>
+    </article>`).join("");
+
+  tfContainer.innerHTML = tf.map((item,i)=>`
+    <article class="question" id="tf-${i}">
+      <div class="q-title">${item.q}</div>
+      <div class="choices">
+        <label class="choice"><input type="radio" name="tf-${i}" value="true"><span>Σωστό</span></label>
+        <label class="choice"><input type="radio" name="tf-${i}" value="false"><span>Λάθος</span></label>
+      </div>
+      <div class="feedback" id="fb-tf-${i}"></div>
+    </article>`).join("");
+}
+
+function makeCard(item, activity){
+  const div = document.createElement("div");
+  div.className = "card";
+  div.draggable = true;
+  div.id = item.id;
+  div.dataset.activity = activity;
+  div.dataset.target = item.target || "";
+  div.textContent = item.text;
+  div.addEventListener("dragstart", e=>{
+    draggedId = div.id;
+    e.dataTransfer.setData("text/plain", div.id);
+  });
+  div.addEventListener("click", ()=>{
+    document.querySelectorAll(".card.selected").forEach(c=>c.classList.remove("selected"));
+    if(selectedCard === div.id){
+      selectedCard = null;
+      return;
+    }
+    selectedCard = div.id;
+    div.classList.add("selected");
+  });
+  return div;
+}
+
+function setupDropZone(zone){
+  zone.addEventListener("dragover", e=>{
+    e.preventDefault();
+    zone.classList.add("over");
+  });
+  zone.addEventListener("dragleave", ()=>zone.classList.remove("over"));
+  zone.addEventListener("drop", e=>{
+    e.preventDefault();
+    zone.classList.remove("over");
+    const id = e.dataTransfer.getData("text/plain") || draggedId;
+    if(id) moveCardToZone(id, zone);
+  });
+  zone.addEventListener("click", ()=>{
+    if(selectedCard){
+      moveCardToZone(selectedCard, zone);
+      document.querySelectorAll(".card.selected").forEach(c=>c.classList.remove("selected"));
+      selectedCard = null;
+    }
+  });
+}
+
+function moveCardToZone(cardId, zone){
+  const card = document.getElementById(cardId);
+  if(!card) return;
+  if(card.dataset.activity !== zone.dataset.activity) return;
+
+  if(zone.dataset.bank === "true"){
+    zone.appendChild(card);
+    return;
+  }
+
+  if(zone.dataset.activity === "category"){
+    zone.appendChild(card);
+  }
+
+  if(zone.dataset.activity === "pair"){
+    const existing = zone.querySelector(".card");
+    if(existing) document.getElementById("pairBank").appendChild(existing);
+    zone.appendChild(card);
+  }
+}
+
+function renderCategories(){
+  const bank = document.getElementById("categoryBank");
+  const zones = document.getElementById("categoryZones");
+  bank.innerHTML = "";
+  zones.innerHTML = "";
+  shuffle(categoryData).forEach(item=>bank.appendChild(makeCard(item,"category")));
+  setupDropZone(bank);
+
+  categories.forEach(cat=>{
+    const dz = document.createElement("div");
+    dz.className = "dropzone category";
+    dz.dataset.activity = "category";
+    dz.dataset.accept = cat.id;
+    const title = document.createElement("h3");
+    title.textContent = cat.title;
+    dz.appendChild(title);
+    setupDropZone(dz);
+    zones.appendChild(dz);
+  });
+}
+
+function renderPairs(){
+  const bank = document.getElementById("pairBank");
+  const zones = document.getElementById("pairZones");
+  bank.innerHTML = "";
+  zones.innerHTML = "";
+  shuffle(pairData).forEach(item=>bank.appendChild(makeCard(item,"pair")));
+  setupDropZone(bank);
+
+  pairData.forEach(item=>{
+    const row = document.createElement("div");
+    row.className = "pair-row";
+    const def = document.createElement("div");
+    def.className = "definition";
+    def.textContent = item.target;
+    const dz = document.createElement("div");
+    dz.className = "dropzone";
+    dz.dataset.activity = "pair";
+    dz.dataset.accept = item.id;
+    setupDropZone(dz);
+    row.appendChild(def);
+    row.appendChild(dz);
+    zones.appendChild(row);
+  });
+}
+
+function checkAll(){
+  let score = 0;
+  const total = mcq.length + tf.length + categoryData.length + pairData.length;
+  const details = [];
+
+  let mcqCorrect = 0;
+  mcq.forEach((item,i)=>{
+    const box = document.getElementById(`mcq-${i}`);
+    const fb = document.getElementById(`fb-mcq-${i}`);
+    box.classList.remove("unanswered");
+    const selected = document.querySelector(`input[name="mcq-${i}"]:checked`);
+    if(!selected){
+      box.classList.add("unanswered");
+      fb.className = "feedback bad";
+      fb.textContent = "Δεν απαντήθηκε.";
+      return;
+    }
+    const ok = Number(selected.value) === item.answer;
+    if(ok){score++; mcqCorrect++;}
+    fb.className = ok ? "feedback good" : "feedback bad";
+    fb.textContent = (ok ? "Σωστό. " : "Λάθος. ") + item.explain;
+  });
+  details.push(`<span class="${mcqCorrect===mcq.length ? "ok" : "no"}">Πολλαπλής επιλογής:</span> ${mcqCorrect}/${mcq.length}`);
+
+  let tfCorrect = 0;
+  tf.forEach((item,i)=>{
+    const box = document.getElementById(`tf-${i}`);
+    const fb = document.getElementById(`fb-tf-${i}`);
+    box.classList.remove("unanswered");
+    const selected = document.querySelector(`input[name="tf-${i}"]:checked`);
+    if(!selected){
+      box.classList.add("unanswered");
+      fb.className = "feedback bad";
+      fb.textContent = "Δεν απαντήθηκε.";
+      return;
+    }
+    const ok = (selected.value === "true") === item.answer;
+    if(ok){score++; tfCorrect++;}
+    fb.className = ok ? "feedback good" : "feedback bad";
+    fb.textContent = (ok ? "Σωστό. " : "Λάθος. ") + item.explain;
+  });
+  details.push(`<span class="${tfCorrect===tf.length ? "ok" : "no"}">Σωστό / Λάθος:</span> ${tfCorrect}/${tf.length}`);
+
+  let categoryCorrect = 0;
+  document.querySelectorAll("#categoryZones .dropzone").forEach(zone=>{
+    zone.classList.remove("correct","wrong");
+    let allOk = true;
+    zone.querySelectorAll(".card").forEach(card=>{
+      if(card.dataset.target === zone.dataset.accept){
+        score++;
+        categoryCorrect++;
+      }else{
+        allOk = false;
+      }
+    });
+    if(zone.querySelectorAll(".card").length > 0){
+      zone.classList.add(allOk ? "correct" : "wrong");
+    }
+  });
+  details.push(`<span class="${categoryCorrect===categoryData.length ? "ok" : "no"}">Drag & Drop σύγκρισης:</span> ${categoryCorrect}/${categoryData.length}`);
+
+  let pairCorrect = 0;
+  document.querySelectorAll("#pairZones .dropzone").forEach(zone=>{
+    zone.classList.remove("correct","wrong");
+    const card = zone.querySelector(".card");
+    if(card && card.id === zone.dataset.accept){
+      score++;
+      pairCorrect++;
+      zone.classList.add("correct");
+    }else{
+      zone.classList.add("wrong");
+    }
+  });
+  details.push(`<span class="${pairCorrect===pairData.length ? "ok" : "no"}">Αντιστοίχιση τύπων:</span> ${pairCorrect}/${pairData.length}`);
+
+  const percent = Math.round(score / total * 100);
+  const name = document.getElementById("studentName").value.trim();
+  document.getElementById("result").style.display = "block";
+  document.getElementById("scoreText").textContent = `${score}/${total} (${percent}%)`;
+  document.getElementById("scoreBar").style.width = `${percent}%`;
+  document.getElementById("details").innerHTML = details.map(d=>`<li>${d}</li>`).join("");
+
+  let msg = "";
+  if(percent >= 85){
+    msg = "Πολύ καλή επίδοση. Ξεχωρίζεις καθαρά τη λειτουργία γεννήτριας και κινητήρα Σ.Ρ.";
+  }else if(percent >= 65){
+    msg = "Καλή προσπάθεια. Δες ξανά τη φορά μετατροπής ενέργειας και τους δύο τύπους E και F.";
+  }else{
+    msg = "Χρειάζεται επανάληψη. Ξεκίνα από το απλό: γεννήτρια = παράγει ηλεκτρική ενέργεια, κινητήρας = παράγει κίνηση.";
+  }
+  document.getElementById("message").textContent = name ? `${name}: ${msg}` : msg;
+  document.getElementById("result").scrollIntoView({behavior:"smooth", block:"center"});
+}
+
+function resetAll(){
+  selectedCard = null;
+  draggedId = null;
+  document.querySelectorAll('input[type="radio"]').forEach(el=>el.checked=false);
+  document.querySelectorAll(".feedback").forEach(el=>{
+    el.className = "feedback";
+    el.textContent = "";
+  });
+  document.querySelectorAll(".question").forEach(el=>el.classList.remove("unanswered"));
+  renderCategories();
+  renderPairs();
+  document.getElementById("result").style.display = "none";
+  document.getElementById("scoreBar").style.width = "0%";
+  window.scrollTo({top:0, behavior:"smooth"});
+}
+
+renderTheory();
+renderCategories();
+renderPairs();
+</script>
+</body>
+</html>

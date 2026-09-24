@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Drag & Drop - Γεννήτριες Σ.Ρ. 2.1.2</title>
+  <style>
+    :root{
+      --bg:#f5f7fb;
+      --card:#ffffff;
+      --ink:#1f2937;
+      --muted:#64748b;
+      --primary:#2563eb;
+      --primary-dark:#1d4ed8;
+      --soft:#eef4ff;
+      --line:#dbe3ef;
+      --good:#15803d;
+      --bad:#b91c1c;
+      --warn:#b45309;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:"Segoe UI", Arial, sans-serif;
+      background:linear-gradient(180deg,#eaf2ff 0%,var(--bg) 48%,#f8fafc 100%);
+      color:var(--ink);
+      line-height:1.55;
+    }
+    header, main, footer{
+      max-width:1120px;
+      margin:0 auto;
+      padding-left:18px;
+      padding-right:18px;
+    }
+    header{padding-top:28px}
+    .hero{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:22px;
+      padding:24px;
+      box-shadow:0 12px 34px rgba(15,23,42,.08);
+    }
+    h1{
+      margin:0 0 8px;
+      font-size:clamp(1.45rem,2.8vw,2.25rem);
+      color:#0f172a;
+    }
+    .subtitle{
+      margin:0;
+      color:var(--muted);
+    }
+    .chips{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:16px;
+    }
+    .chip{
+      background:var(--soft);
+      border:1px solid #cfe0ff;
+      color:#1e3a8a;
+      padding:7px 11px;
+      border-radius:999px;
+      font-size:.92rem;
+      font-weight:700;
+    }
+    main{padding-top:10px;padding-bottom:36px}
+    .panel{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:20px;
+      margin:18px 0;
+      box-shadow:0 8px 24px rgba(15,23,42,.05);
+    }
+    .topbar{
+      display:grid;
+      grid-template-columns:1fr auto auto;
+      gap:12px;
+      align-items:end;
+    }
+    label.small{
+      font-weight:800;
+      display:block;
+      margin-bottom:6px;
+    }
+    input[type="text"]{
+      width:100%;
+      padding:12px 14px;
+      border:1px solid #cbd5e1;
+      border-radius:12px;
+      font-size:1rem;
+      outline:none;
+    }
+    input[type="text"]:focus{
+      border-color:var(--primary);
+      box-shadow:0 0 0 3px rgba(37,99,235,.12);
+    }
+    button{
+      border:0;
+      border-radius:12px;
+      padding:12px 16px;
+      cursor:pointer;
+      font-weight:900;
+      font-size:.98rem;
+      transition:.15s ease;
+      white-space:nowrap;
+    }
+    .btn-primary{background:var(--primary);color:#fff}
+    .btn-primary:hover{background:var(--primary-dark)}
+    .btn-secondary{background:#e2e8f0;color:#0f172a}
+    .btn-secondary:hover{background:#cbd5e1}
+    .section-title{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      margin:4px 0 14px;
+      padding-bottom:10px;
+      border-bottom:1px solid var(--line);
+    }
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-width:34px;
+      height:34px;
+      border-radius:999px;
+      background:#dbeafe;
+      color:#1d4ed8;
+      font-weight:900;
+    }
+    h2{margin:0;font-size:1.25rem}
+    .hint{
+      color:var(--muted);
+      margin:0 0 14px;
+      font-size:.95rem;
+    }
+    .formula{
+      display:inline-block;
+      font-family:Consolas,"Courier New",monospace;
+      background:#f8fafc;
+      border:1px solid #e2e8f0;
+      border-radius:8px;
+      padding:2px 7px;
+      font-weight:900;
+      color:#0f172a;
+    }
+    .workspace{
+      display:grid;
+      grid-template-columns:minmax(260px,.8fr) minmax(320px,1.2fr);
+      gap:16px;
+      align-items:start;
+    }
+    .bank, .zones{
+      border:1px dashed #b9c5d6;
+      border-radius:16px;
+      background:#fbfdff;
+      padding:14px;
+      min-height:92px;
+    }
+    .bank-title, .zones-title{
+      font-weight:900;
+      color:#334155;
+      margin:0 0 10px;
+    }
+    .cards{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+    }
+    .card{
+      user-select:none;
+      border:1px solid #cbd5e1;
+      background:#fff;
+      border-radius:12px;
+      padding:10px 12px;
+      cursor:grab;
+      font-weight:800;
+      box-shadow:0 4px 12px rgba(15,23,42,.06);
+      touch-action:manipulation;
+    }
+    .card:active{cursor:grabbing}
+    .card.selected{
+      outline:3px solid rgba(37,99,235,.24);
+      border-color:var(--primary);
+      background:#eff6ff;
+    }
+    .drop-grid{
+      display:grid;
+      gap:10px;
+    }
+    .drop-row{
+      display:grid;
+      grid-template-columns:minmax(160px,.78fr) minmax(180px,1fr);
+      gap:10px;
+      align-items:stretch;
+    }
+    .definition{
+      border:1px solid #e2e8f0;
+      background:#f8fafc;
+      border-radius:12px;
+      padding:10px 12px;
+      font-weight:700;
+    }
+    .dropzone{
+      min-height:48px;
+      border:2px dashed #cbd5e1;
+      background:#ffffff;
+      border-radius:12px;
+      padding:8px;
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      align-items:center;
+    }
+    .dropzone.over{
+      border-color:var(--primary);
+      background:#eff6ff;
+    }
+    .dropzone.correct{
+      border-color:#22c55e;
+      background:#f0fdf4;
+    }
+    .dropzone.wrong{
+      border-color:#ef4444;
+      background:#fef2f2;
+    }
+    .category-grid{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:12px;
+    }
+    .category{
+      min-height:180px;
+      align-content:flex-start;
+    }
+    .category h3{
+      width:100%;
+      margin:0 0 8px;
+      font-size:1rem;
+      color:#1e3a8a;
+    }
+    .sequence-wrap{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:16px;
+    }
+    .sequence-list{
+      border:1px dashed #b9c5d6;
+      background:#fbfdff;
+      border-radius:16px;
+      padding:14px;
+      min-height:360px;
+    }
+    .sequence-item{
+      display:grid;
+      grid-template-columns:auto 1fr auto;
+      gap:10px;
+      align-items:center;
+      margin:9px 0;
+      padding:10px;
+      border:1px solid #cbd5e1;
+      border-radius:12px;
+      background:#fff;
+      box-shadow:0 4px 12px rgba(15,23,42,.05);
+      cursor:grab;
+    }
+    .seq-number{
+      width:28px;
+      height:28px;
+      border-radius:999px;
+      background:#dbeafe;
+      color:#1d4ed8;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight:900;
+      flex:0 0 auto;
+    }
+    .seq-controls{
+      display:flex;
+      gap:5px;
+    }
+    .tiny{
+      padding:6px 8px;
+      border-radius:9px;
+      background:#e2e8f0;
+      font-size:.85rem;
+    }
+    .tiny:hover{background:#cbd5e1}
+    .result{
+      display:none;
+      margin-top:18px;
+      padding:18px;
+      border-radius:18px;
+      border:1px solid #bfdbfe;
+      background:#eff6ff;
+    }
+    .score-big{
+      font-size:2rem;
+      font-weight:900;
+      color:#1d4ed8;
+      margin:2px 0 8px;
+    }
+    .progress{
+      height:16px;
+      background:#dbeafe;
+      border-radius:999px;
+      overflow:hidden;
+      margin:12px 0 4px;
+    }
+    .bar{
+      width:0%;
+      height:100%;
+      background:linear-gradient(90deg,#2563eb,#16a34a);
+      transition:width .35s ease;
+    }
+    .feedback-list{
+      margin:10px 0 0;
+      padding-left:20px;
+    }
+    .ok{color:var(--good);font-weight:900}
+    .no{color:var(--bad);font-weight:900}
+    .note{
+      color:var(--muted);
+      font-size:.93rem;
+      margin-top:10px;
+    }
+    footer{
+      color:var(--muted);
+      font-size:.9rem;
+      padding-bottom:26px;
+    }
+    @media(max-width:850px){
+      .workspace,.sequence-wrap{grid-template-columns:1fr}
+      .category-grid{grid-template-columns:1fr}
+      .topbar{grid-template-columns:1fr}
+      button{width:100%}
+      .drop-row{grid-template-columns:1fr}
+      .hero,.panel{padding:16px}
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="hero">
+      <h1>Drag & Drop: Αρχή λειτουργίας Γεννητριών Σ.Ρ.</h1>
+      <p class="subtitle">Κεφάλαιο 2.1.2 — Σύρε τις κάρτες στη σωστή θέση. Λειτουργεί και με κλικ: επιλέγεις κάρτα και μετά πατάς στο πλαίσιο.</p>
+      <div class="chips">
+        <span class="chip">Αντιστοίχιση τύπου</span>
+        <span class="chip">Σειρά λειτουργίας</span>
+        <span class="chip">Κατηγοριοποίηση</span>
+        <span class="chip">Σύνολο: 18 μονάδες</span>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="panel">
+      <div class="topbar">
+        <div>
+          <label class="small" for="studentName">Όνομα μαθητή / μαθήτριας</label>
+          <input id="studentName" type="text" placeholder="Γράψε εδώ το όνομά σου">
+        </div>
+        <button class="btn-primary" onclick="checkAll()">Έλεγχος απαντήσεων</button>
+        <button class="btn-secondary" onclick="resetAll()">Καθαρισμός</button>
+      </div>
+      <p class="note">Υπενθύμιση: <span class="formula">E = B · ℓ · υ · ημ(α)</span>. Η ΗΕΔ εμφανίζεται όταν ο αγωγός κινείται έτσι ώστε να κόβει τις μαγνητικές γραμμές.</p>
+      <div id="result" class="result">
+        <h2>Αποτέλεσμα</h2>
+        <div id="scoreText" class="score-big"></div>
+        <div class="progress"><div id="scoreBar" class="bar"></div></div>
+        <p id="message"></p>
+        <ul id="details" class="feedback-list"></ul>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="section-title">
+        <span class="badge">Α</span>
+        <h2>Αντιστοίχιση συμβόλων του τύπου</h2>
+      </div>
+      <p class="hint">Σύρε κάθε σύμβολο στο σωστό πλαίσιο.</p>
+      <div class="workspace">
+        <div class="bank">
+          <p class="bank-title">Κάρτες</p>
+          <div id="symbolBank" class="cards dropzone" data-bank="true" data-activity="symbols"></div>
+        </div>
+        <div class="zones">
+          <p class="zones-title">Πλαίσια αντιστοίχισης</p>
+          <div id="symbolZones" class="drop-grid"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="section-title">
+        <span class="badge">Β</span>
+        <h2>Βάλε τα στάδια λειτουργίας στη σωστή σειρά</h2>
+      </div>
+      <p class="hint">Σύρε τις κάρτες πάνω/κάτω ή χρησιμοποίησε τα κουμπιά ↑ και ↓.</p>
+      <div class="sequence-wrap">
+        <div class="sequence-list">
+          <p class="bank-title">Στάδια — τοποθέτησέ τα από το 1 έως το 6</p>
+          <div id="sequenceList"></div>
+        </div>
+
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="section-title">
+        <span class="badge">Γ</span>
+        <h2>Κατηγοριοποίηση φαινομένων</h2>
+      </div>
+      <p class="hint">Σύρε κάθε περίπτωση στην κατάλληλη κατηγορία.</p>
+      <div class="workspace">
+        <div class="bank">
+          <p class="bank-title">Κάρτες</p>
+          <div id="caseBank" class="cards dropzone" data-bank="true" data-activity="cases"></div>
+        </div>
+        <div class="zones">
+          <p class="zones-title">Κατηγορίες</p>
+          <div class="category-grid" id="caseZones"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    Εκπαιδευτικό αρχείο HTML για Γ΄ ΕΠΑ.Λ. — Ηλεκτρικές Μηχανές, Ενότητα 2.1.2.
+  </footer>
+
+<script>
+const symbolData = [
+  {id:"sym-E", text:"E", target:"ΗΕΔ από επαγωγή"},
+  {id:"sym-B", text:"B", target:"Μαγνητική επαγωγή"},
+  {id:"sym-l", text:"ℓ", target:"Ενεργό μήκος αγωγού"},
+  {id:"sym-u", text:"υ", target:"Ταχύτητα αγωγού"},
+  {id:"sym-a", text:"α", target:"Γωνία αγωγού - μαγνητικών γραμμών"},
+  {id:"sym-sin", text:"ημ(α)", target:"Ημίτονο της γωνίας"}
+];
+
+const sequenceData = [
+  {id:"seq-1", order:1, text:"Μια κινητήρια μηχανή περιστρέφει το πλαίσιο ή τον αγωγό."},
+  {id:"seq-2", order:2, text:"Ο αγωγός κινείται μέσα στο μαγνητικό πεδίο και κόβει μαγνητικές γραμμές."},
+  {id:"seq-3", order:3, text:"Στα άκρα του αγωγού αναπτύσσεται ΗΕΔ από επαγωγή."},
+  {id:"seq-4", order:4, text:"Αν το κύκλωμα είναι κλειστό, εμφανίζεται ρεύμα."},
+  {id:"seq-5", order:5, text:"Ο συλλέκτης αλλάζει τις συνδέσεις την κατάλληλη στιγμή και ανορθώνει το ρεύμα."},
+  {id:"seq-6", order:6, text:"Στην εξωτερική έξοδο παίρνουμε συνεχές ρεύμα, με μικρές κυματώσεις."}
+];
+
+const caseData = [
+  {id:"case-1", text:"α = 0°", target:"zero"},
+  {id:"case-2", text:"α = 180°", target:"zero"},
+  {id:"case-3", text:"Δεν υπάρχει σχετική κίνηση", target:"zero"},
+  {id:"case-4", text:"α = 90°", target:"increase"},
+  {id:"case-5", text:"Αυξάνεται η ταχύτητα υ", target:"increase"},
+  {id:"case-6", text:"Αυξάνεται η μαγνητική επαγωγή B", target:"increase"},
+  {id:"case-7", text:"Χρησιμοποιούνται περισσότερα πλαίσια / τομείς συλλέκτη", target:"smooth"},
+  {id:"case-8", text:"Μειώνονται οι κυματώσεις στην έξοδο", target:"smooth"}
+];
+
+const categories = [
+  {id:"zero", title:"ΗΕΔ μηδενική"},
+  {id:"increase", title:"ΗΕΔ μέγιστη ή αυξάνεται"},
+  {id:"smooth", title:"Καλύτερη ανόρθωση / πιο ομαλή έξοδος"}
+];
+
+let draggedId = null;
+let selectedCard = null;
+
+function shuffle(arr){
+  return [...arr].sort(() => Math.random() - 0.5);
+}
+
+function makeCard(item, activity){
+  const div = document.createElement("div");
+  div.className = "card";
+  div.draggable = true;
+  div.id = item.id;
+  div.dataset.activity = activity;
+  div.dataset.target = item.target || "";
+  div.dataset.order = item.order || "";
+  div.textContent = item.text;
+  div.addEventListener("dragstart", e => {
+    draggedId = div.id;
+    e.dataTransfer.setData("text/plain", div.id);
+  });
+  div.addEventListener("click", e => {
+    if(activity === "sequence") return;
+    document.querySelectorAll(".card.selected").forEach(c => c.classList.remove("selected"));
+    if(selectedCard === div.id){
+      selectedCard = null;
+      return;
+    }
+    selectedCard = div.id;
+    div.classList.add("selected");
+  });
+  return div;
+}
+
+function setupDropZone(zone){
+  zone.addEventListener("dragover", e => {
+    e.preventDefault();
+    zone.classList.add("over");
+  });
+  zone.addEventListener("dragleave", () => zone.classList.remove("over"));
+  zone.addEventListener("drop", e => {
+    e.preventDefault();
+    zone.classList.remove("over");
+    const id = e.dataTransfer.getData("text/plain") || draggedId;
+    if(!id) return;
+    moveCardToZone(id, zone);
+  });
+  zone.addEventListener("click", () => {
+    if(selectedCard){
+      moveCardToZone(selectedCard, zone);
+      document.querySelectorAll(".card.selected").forEach(c => c.classList.remove("selected"));
+      selectedCard = null;
+    }
+  });
+}
+
+function moveCardToZone(cardId, zone){
+  const card = document.getElementById(cardId);
+  if(!card) return;
+  const zoneActivity = zone.dataset.activity;
+  if(card.dataset.activity !== zoneActivity) return;
+
+  if(zone.dataset.bank === "true"){
+    zone.appendChild(card);
+    return;
+  }
+
+  if(zoneActivity === "symbols"){
+    const existing = zone.querySelector(".card");
+    if(existing){
+      document.getElementById("symbolBank").appendChild(existing);
+    }
+    zone.appendChild(card);
+  }
+
+  if(zoneActivity === "cases"){
+    zone.appendChild(card);
+  }
+}
+
+function renderSymbols(){
+  const bank = document.getElementById("symbolBank");
+  const zones = document.getElementById("symbolZones");
+  bank.innerHTML = "";
+  zones.innerHTML = "";
+
+  shuffle(symbolData).forEach(item => bank.appendChild(makeCard(item, "symbols")));
+  setupDropZone(bank);
+
+  symbolData.forEach(item => {
+    const row = document.createElement("div");
+    row.className = "drop-row";
+    const def = document.createElement("div");
+    def.className = "definition";
+    def.textContent = item.target;
+    const dz = document.createElement("div");
+    dz.className = "dropzone";
+    dz.dataset.activity = "symbols";
+    dz.dataset.accept = item.id;
+    setupDropZone(dz);
+    row.appendChild(def);
+    row.appendChild(dz);
+    zones.appendChild(row);
+  });
+}
+
+function renderSequence(){
+  const list = document.getElementById("sequenceList");
+  list.innerHTML = "";
+  shuffle(sequenceData).forEach(item => {
+    const row = document.createElement("div");
+    row.className = "sequence-item";
+    row.draggable = true;
+    row.id = item.id;
+    row.dataset.order = item.order;
+
+    const number = document.createElement("div");
+    number.className = "seq-number";
+    number.textContent = "?";
+
+    const text = document.createElement("div");
+    text.textContent = item.text;
+
+    const controls = document.createElement("div");
+    controls.className = "seq-controls";
+
+    const up = document.createElement("button");
+    up.className = "tiny";
+    up.type = "button";
+    up.textContent = "↑";
+    up.onclick = () => {
+      const prev = row.previousElementSibling;
+      if(prev) list.insertBefore(row, prev);
+      updateSequenceNumbers();
+    };
+
+    const down = document.createElement("button");
+    down.className = "tiny";
+    down.type = "button";
+    down.textContent = "↓";
+    down.onclick = () => {
+      const next = row.nextElementSibling;
+      if(next) list.insertBefore(next, row);
+      updateSequenceNumbers();
+    };
+
+    controls.appendChild(up);
+    controls.appendChild(down);
+    row.appendChild(number);
+    row.appendChild(text);
+    row.appendChild(controls);
+
+    row.addEventListener("dragstart", e => {
+      draggedId = row.id;
+      e.dataTransfer.setData("text/plain", row.id);
+    });
+    row.addEventListener("dragover", e => {
+      e.preventDefault();
+      const dragging = document.getElementById(draggedId);
+      if(!dragging || dragging === row) return;
+      const rect = row.getBoundingClientRect();
+      const before = e.clientY < rect.top + rect.height / 2;
+      if(before){
+        list.insertBefore(dragging, row);
+      }else{
+        list.insertBefore(dragging, row.nextSibling);
+      }
+      updateSequenceNumbers();
+    });
+
+    list.appendChild(row);
+  });
+  updateSequenceNumbers();
+}
+
+function updateSequenceNumbers(){
+  document.querySelectorAll("#sequenceList .sequence-item").forEach((row, index) => {
+    row.querySelector(".seq-number").textContent = index + 1;
+  });
+}
+
+function renderCases(){
+  const bank = document.getElementById("caseBank");
+  const zones = document.getElementById("caseZones");
+  bank.innerHTML = "";
+  zones.innerHTML = "";
+
+  shuffle(caseData).forEach(item => bank.appendChild(makeCard(item, "cases")));
+  setupDropZone(bank);
+
+  categories.forEach(cat => {
+    const dz = document.createElement("div");
+    dz.className = "dropzone category";
+    dz.dataset.activity = "cases";
+    dz.dataset.accept = cat.id;
+    const title = document.createElement("h3");
+    title.textContent = cat.title;
+    dz.appendChild(title);
+    setupDropZone(dz);
+    zones.appendChild(dz);
+  });
+}
+
+function checkAll(){
+  let score = 0;
+  let total = symbolData.length + sequenceData.length + caseData.length;
+  const details = [];
+
+  let symbolsCorrect = 0;
+  document.querySelectorAll("#symbolZones .dropzone").forEach(zone => {
+    zone.classList.remove("correct","wrong");
+    const card = zone.querySelector(".card");
+    if(card && card.id === zone.dataset.accept){
+      score++;
+      symbolsCorrect++;
+      zone.classList.add("correct");
+    }else{
+      zone.classList.add("wrong");
+    }
+  });
+  details.push(`<span class="${symbolsCorrect === symbolData.length ? "ok" : "no"}">Αντιστοίχιση:</span> ${symbolsCorrect}/${symbolData.length}`);
+
+  let sequenceCorrect = 0;
+  document.querySelectorAll("#sequenceList .sequence-item").forEach((row, index) => {
+    row.style.borderColor = "#cbd5e1";
+    row.style.background = "#fff";
+    const ok = Number(row.dataset.order) === index + 1;
+    if(ok){
+      score++;
+      sequenceCorrect++;
+      row.style.borderColor = "#22c55e";
+      row.style.background = "#f0fdf4";
+    }else{
+      row.style.borderColor = "#ef4444";
+      row.style.background = "#fef2f2";
+    }
+  });
+  details.push(`<span class="${sequenceCorrect === sequenceData.length ? "ok" : "no"}">Σειρά λειτουργίας:</span> ${sequenceCorrect}/${sequenceData.length}`);
+
+  let casesCorrect = 0;
+  document.querySelectorAll("#caseZones .dropzone").forEach(zone => {
+    zone.classList.remove("correct","wrong");
+    let allOk = true;
+    zone.querySelectorAll(".card").forEach(card => {
+      if(card.dataset.target === zone.dataset.accept){
+        score++;
+        casesCorrect++;
+      }else{
+        allOk = false;
+      }
+    });
+    if(zone.querySelectorAll(".card").length > 0){
+      zone.classList.add(allOk ? "correct" : "wrong");
+    }
+  });
+  details.push(`<span class="${casesCorrect === caseData.length ? "ok" : "no"}">Κατηγοριοποίηση:</span> ${casesCorrect}/${caseData.length}`);
+
+  const percent = Math.round(score / total * 100);
+  const name = document.getElementById("studentName").value.trim();
+  document.getElementById("result").style.display = "block";
+  document.getElementById("scoreText").textContent = `${score}/${total} (${percent}%)`;
+  document.getElementById("scoreBar").style.width = `${percent}%`;
+  document.getElementById("details").innerHTML = details.map(d => `<li>${d}</li>`).join("");
+
+  let msg = "";
+  if(percent >= 85){
+    msg = "Πολύ καλή επίδοση. Η βασική ιδέα της γεννήτριας Σ.Ρ. έχει γίνει καθαρή.";
+  }else if(percent >= 65){
+    msg = "Καλή προσπάθεια. Δες ξανά τον τύπο της ΗΕΔ και τον ρόλο του συλλέκτη.";
+  }else{
+    msg = "Χρειάζεται επανάληψη. Ξεκίνα από τη σχέση κίνησης αγωγού - μαγνητικού πεδίου και μετά πήγαινε στον συλλέκτη.";
+  }
+  document.getElementById("message").textContent = name ? `${name}: ${msg}` : msg;
+  document.getElementById("result").scrollIntoView({behavior:"smooth", block:"center"});
+}
+
+function resetAll(){
+  selectedCard = null;
+  draggedId = null;
+  renderSymbols();
+  renderSequence();
+  renderCases();
+  document.getElementById("result").style.display = "none";
+  document.getElementById("scoreBar").style.width = "0%";
+  window.scrollTo({top:0, behavior:"smooth"});
+}
+
+renderSymbols();
+renderSequence();
+renderCases();
+</script>
+</body>
+</html>
